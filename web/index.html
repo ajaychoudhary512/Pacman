@@ -3,146 +3,322 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pacman Web Arcade & AI Visualizer | Localhost Edition</title>
-    <meta name="description" content="Play classic Pacman or visualize AI search algorithms (BFS, DFS, A*) directly in your browser with synthesized audio and neon cyberpunk visuals.">
+    <title>PAC-MAN AI | AI Search & Retro Arcade Laboratory</title>
+    <meta name="description" content="Next-generation Pac-Man AI laboratory and retro arcade. Interactive pathfinding visualizer supporting A*, BFS, DFS, and Greedy search algorithms.">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23ffd700'/></svg>">
 </head>
 <body>
-    <header>
-        <div class="brand">
-            <div class="brand-icon" aria-hidden="true"></div>
-            <div class="brand-text">
-                <h1>PAC-MAN</h1>
-                <span>AI Search & Retro Arcade</span>
+    <!-- Top Navigation Bar -->
+    <header class="top-nav">
+        <div class="nav-left">
+            <div class="brand-logo" aria-hidden="true"></div>
+            <div class="brand-titles">
+                <span class="brand-pacman">PAC-MAN AI</span>
+                <span class="brand-subtitle">AI SEARCH & RETRO ARCADE</span>
             </div>
         </div>
-        <div class="header-badges">
-            <span class="badge pulse">Localhost Active</span>
-            <button id="btnSound" class="action-btn" title="Toggle Sound">🔊 Sound</button>
+
+        <nav class="nav-center" aria-label="Main Navigation">
+            <button class="nav-link active" data-nav="play" id="navPlay">Play</button>
+            <button class="nav-link" data-nav="algorithms" id="navAlgorithms">Algorithms</button>
+            <button class="nav-link" data-nav="mazes" id="navMazes">Maze Types</button>
+            <button class="nav-link" data-nav="stats" id="navStats">Stats</button>
+            <button class="nav-link" data-nav="about" id="navAbout">About</button>
+        </nav>
+
+        <div class="nav-right">
+            <div class="status-indicator">
+                <span class="status-dot"></span>
+                <span class="status-text">AI Ready / Localhost Active</span>
+            </div>
+            <button id="btnSound" class="nav-btn" title="Toggle Sound">
+                <span class="btn-icon">🔊</span>
+                <span class="btn-label">Sound</span>
+            </button>
+            <button id="btnSettings" class="nav-btn" title="System Settings">
+                <span class="btn-icon">⚙</span>
+                <span class="btn-label">Settings</span>
+            </button>
         </div>
     </header>
 
-    <main class="game-container">
-        <!-- Play Area -->
-        <section class="play-area" aria-label="Game Screen">
-            <!-- Scoreboard HUD -->
-            <div class="scoreboard">
-                <div class="stat-box">
-                    <div class="stat-label">Score</div>
-                    <div id="scoreValue" class="stat-value score">0</div>
+    <!-- Main Application Container -->
+    <main class="app-workspace">
+        <!-- Left Section: Main Game Center & Live Telemetry -->
+        <section class="game-center" aria-label="Game Arena">
+            <!-- Game HUD -->
+            <div class="game-hud">
+                <div class="hud-card">
+                    <span class="hud-label">SCORE</span>
+                    <span id="scoreValue" class="hud-value hud-score">0</span>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-label">High Score</div>
-                    <div id="highScoreValue" class="stat-value high-score">0</div>
+                <div class="hud-card">
+                    <span class="hud-label">HIGH SCORE</span>
+                    <span id="highScoreValue" class="hud-value hud-high">0</span>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-label">Dots Left</div>
-                    <div id="dotsValue" class="stat-value dots">0</div>
+                <div class="hud-card">
+                    <span class="hud-label">DOTS LEFT</span>
+                    <span id="dotsValue" class="hud-value hud-dots">0</span>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-label">Lives</div>
-                    <div id="livesContainer" class="lives-container"></div>
-                </div>
-            </div>
-
-            <!-- Canvas Wrapper -->
-            <div class="canvas-wrapper">
-                <canvas id="gameCanvas" width="560" height="580"></canvas>
-                <div id="gameOverlay" class="game-overlay">
-                    <h2 id="overlayTitle" class="overlay-title">PAC-MAN</h2>
-                    <p id="overlaySubtitle" class="overlay-subtitle">Press to Start</p>
-                    <button id="overlayBtn" class="overlay-btn">PLAY AGAIN</button>
-                </div>
-            </div>
-
-            <!-- Quick Action Bar -->
-            <div class="quick-controls">
-                <div class="btn-group">
-                    <button id="btnPause" class="action-btn">⏸ Pause (Space)</button>
-                    <button id="btnRestart" class="action-btn">🔄 Restart</button>
-                </div>
-                <div class="legend">
-                    <div class="legend-item"><span class="legend-dot blinky"></span>Blinky</div>
-                    <div class="legend-item"><span class="legend-dot pinky"></span>Pinky</div>
-                    <div class="legend-item"><span class="legend-dot inky"></span>Inky</div>
-                    <div class="legend-item"><span class="legend-dot clyde"></span>Clyde</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Sidebar Settings -->
-        <aside class="sidebar" aria-label="Game Controls and Settings">
-            <!-- Mode Selection Card -->
-            <div class="control-card">
-                <div class="card-title">🎮 Mode Selection</div>
-                <div class="mode-tabs">
-                    <button id="tabManual" class="mode-tab active">Manual Play</button>
-                    <button id="tabAi" class="mode-tab">AI Autopilot</button>
-                </div>
-
-                <!-- AI Controls (Toggled) -->
-                <div id="aiSettings" class="form-group" style="display: none; flex-direction: column; gap: 12px;">
-                    <label for="aiAlgoSelect">Search Algorithm:</label>
-                    <select id="aiAlgoSelect">
-                        <option value="bfs">Breadth-First Search (BFS)</option>
-                        <option value="astar">A* Search (Manhattan)</option>
-                        <option value="dfs">Depth-First Search (DFS)</option>
-                    </select>
-
-                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                        <input type="checkbox" id="trailCheckbox" checked>
-                        <span>Visualize Search Path & Nodes</span>
-                    </label>
-
-                    <div class="ai-info-box">
-                        <strong>AI Search Active:</strong> Pacman computes optimal paths live using the algorithm selected above!
+                <div class="hud-card">
+                    <span class="hud-label">LIVES</span>
+                    <div id="livesContainer" class="lives-indicator" aria-label="Remaining Lives">
+                        <span class="life-dot"></span>
+                        <span class="life-dot"></span>
+                        <span class="life-dot"></span>
                     </div>
                 </div>
             </div>
 
-            <!-- Layout and Difficulty Card -->
-            <div class="control-card">
-                <div class="card-title">⚙️ Map & Speed</div>
-                <div class="form-group">
-                    <label for="layoutSelect">Maze Layout:</label>
-                    <select id="layoutSelect">
-                        <option value="originalClassic">Classic Arcade (originalClassic)</option>
-                        <option value="mediumClassic">Medium Classic</option>
-                        <option value="smallClassic">Small Classic</option>
-                        <option value="mediumMaze">Medium Maze (Pathfinding)</option>
-                        <option value="bigMaze">Big Maze</option>
-                        <option value="trickySearch">Tricky Search</option>
-                        <option value="tinyMaze">Tiny Maze</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="speedSlider">Game Speed:</label>
-                    <input type="range" id="speedSlider" min="0.5" max="2.5" step="0.25" value="1.0">
+            <!-- Pacman Canvas Display Wrapper -->
+            <div class="maze-display-wrapper">
+                <div class="canvas-frame">
+                    <canvas id="gameCanvas" width="560" height="580"></canvas>
+                    
+                    <!-- Interactive Overlay -->
+                    <div id="gameOverlay" class="game-overlay">
+                        <div class="overlay-box">
+                            <h2 id="overlayTitle" class="overlay-title">PAC-MAN AI</h2>
+                            <p id="overlaySubtitle" class="overlay-subtitle">Press Play or Space to Launch</p>
+                            <button id="overlayBtn" class="overlay-action-btn">▶ START MISSION</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Virtual D-Pad -->
-            <div class="control-card">
-                <div class="card-title">🕹️ Touch / Click D-Pad</div>
-                <div class="dpad-container">
-                    <button id="btnUp" class="dpad-btn" title="Up">▲</button>
-                    <div class="dpad-row">
-                        <button id="btnLeft" class="dpad-btn" title="Left">◄</button>
-                        <button id="btnDown" class="dpad-btn" title="Down">▼</button>
-                        <button id="btnRight" class="dpad-btn" title="Right">►</button>
+            <!-- Bottom Game Controls & Speed -->
+            <div class="controls-toolbar">
+                <div class="playback-controls">
+                    <button id="btnPlay" class="ctrl-btn ctrl-play" title="Play Game">▶ PLAY</button>
+                    <button id="btnPause" class="ctrl-btn ctrl-pause" title="Pause Game">⏸ PAUSE</button>
+                    <button id="btnRestart" class="ctrl-btn ctrl-restart" title="Restart Game">↻ RESTART</button>
+                </div>
+
+                <div class="keyboard-guide">
+                    <span class="kbd-label">KEYBOARD:</span>
+                    <div class="kbd-keys">
+                        <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>
+                        <span class="kbd-or">OR</span>
+                        <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>
+                    </div>
+                </div>
+
+                <div class="speed-control">
+                    <div class="speed-header">
+                        <span class="speed-label">GAME SPEED</span>
+                        <span id="speedValue" class="speed-value">1.0x</span>
+                    </div>
+                    <input type="range" id="speedSlider" min="0.5" max="2.5" step="0.25" value="1.0" aria-label="Game Speed">
+                </div>
+            </div>
+
+            <!-- AI Search Monitor Panel -->
+            <section class="ai-monitor-panel" aria-label="AI Search Monitor">
+                <div class="panel-header">
+                    <div class="panel-title-wrap">
+                        <span class="terminal-icon">⚡</span>
+                        <h3 class="panel-title">AI SEARCH MONITOR</h3>
+                    </div>
+                    <div class="monitor-live-tag">
+                        <span class="live-dot"></span>
+                        <span id="monitorStatusTag">OPTIMAL PATH FOUND</span>
+                    </div>
+                </div>
+
+                <div class="monitor-metrics-grid">
+                    <div class="metric-item">
+                        <span class="metric-label">Algorithm</span>
+                        <span id="metricAlgo" class="metric-val text-cyan">A* Search</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Nodes Explored</span>
+                        <span id="metricExplored" class="metric-val text-blue">0</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Path Length</span>
+                        <span id="metricPathLen" class="metric-val text-yellow">0</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Search Time</span>
+                        <span id="metricTime" class="metric-val text-white">0.0 ms</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Current State</span>
+                        <span id="metricState" class="metric-val text-green">IDLE</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Target Coords</span>
+                        <span id="metricTarget" class="metric-val text-muted">[ - , - ]</span>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <!-- Right Section: AI Controller & Maze Configuration -->
+        <aside class="ai-sidebar" aria-label="AI Controller and Configuration">
+            <!-- AI Controller Card -->
+            <div class="ai-card">
+                <div class="card-head">
+                    <div class="card-title">AI CONTROLLER</div>
+                    <div class="card-badge" id="aiReadyBadge">
+                        <span class="badge-dot"></span>
+                        <span>AI READY</span>
+                    </div>
+                </div>
+
+                <!-- Mode Switch Buttons -->
+                <div class="mode-switch-group">
+                    <button id="tabManual" class="mode-btn active">Manual Play</button>
+                    <button id="tabAi" class="mode-btn">AI Autopilot</button>
+                </div>
+
+                <!-- Algorithm Selection -->
+                <div class="form-row">
+                    <label for="aiAlgoSelect" class="form-label">Search Algorithm</label>
+                    <select id="aiAlgoSelect" class="custom-select">
+                        <option value="astar">A* Search (Manhattan)</option>
+                        <option value="bfs">Breadth-First Search (BFS)</option>
+                        <option value="dfs">Depth-First Search (DFS)</option>
+                        <option value="greedy">Greedy Best-First Search</option>
+                    </select>
+                </div>
+
+                <!-- Visualization Toggle -->
+                <div class="form-toggle-row">
+                    <label class="toggle-container" for="trailCheckbox">
+                        <input type="checkbox" id="trailCheckbox" checked>
+                        <span class="toggle-custom"></span>
+                        <span class="toggle-text">Visualize Search Path & Nodes</span>
+                    </label>
+                </div>
+
+                <!-- Visual Legend Indicator -->
+                <div class="ai-visual-legend">
+                    <div class="legend-badge">
+                        <span class="legend-swatch swatch-explored"></span>
+                        <span>Explored Nodes (Cyan)</span>
+                    </div>
+                    <div class="legend-badge">
+                        <span class="legend-swatch swatch-path"></span>
+                        <span>Optimal Path (Yellow)</span>
+                    </div>
+                    <div class="legend-badge">
+                        <span class="legend-swatch swatch-target"></span>
+                        <span>Target Node (Green)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Maze Layout Selector Card -->
+            <div class="ai-card">
+                <div class="card-head">
+                    <div class="card-title">Maze Layout</div>
+                    <span class="card-sub-info" id="mazeDimensionsText">28 × 27</span>
+                </div>
+
+                <div class="maze-selector-row">
+                    <div class="selector-field">
+                        <label for="layoutSelect" class="form-label">Select Layout</label>
+                        <select id="layoutSelect" class="custom-select">
+                            <optgroup label="Standard Mazes">
+                                <option value="originalClassic">Classic Arcade (originalClassic)</option>
+                                <option value="mediumClassic">Medium Classic</option>
+                                <option value="smallClassic">Small Classic</option>
+                                <option value="mediumMaze">Medium Maze (Pathfinding)</option>
+                                <option value="bigMaze">Big Maze</option>
+                                <option value="trickySearch">Tricky Search</option>
+                                <option value="tinyMaze">Tiny Maze</option>
+                            </optgroup>
+                            <optgroup label="Repository Layouts" id="dynamicLayoutsGroup">
+                                <!-- Populated dynamically from /api/layouts -->
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <!-- Mini Maze Preview Thumbnail -->
+                    <div class="preview-box" title="Maze Layout Preview">
+                        <canvas id="previewCanvas" width="72" height="72"></canvas>
+                        <span class="preview-tag">PREVIEW</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ghost Telemetry & Status -->
+            <div class="ai-card ghost-card">
+                <div class="card-head">
+                    <div class="card-title">Ghost Agents</div>
+                    <span class="card-sub-info">AI ADVERSARIES</span>
+                </div>
+                <div class="ghosts-grid">
+                    <div class="ghost-item blinky" id="ghost0">
+                        <span class="ghost-dot blinky-dot"></span>
+                        <div class="ghost-meta">
+                            <span class="ghost-name">Blinky (Shadow)</span>
+                            <span class="ghost-status" id="ghost0Status">Active / Chase</span>
+                        </div>
+                    </div>
+                    <div class="ghost-item pinky" id="ghost1">
+                        <span class="ghost-dot pinky-dot"></span>
+                        <div class="ghost-meta">
+                            <span class="ghost-name">Pinky (Speedy)</span>
+                            <span class="ghost-status" id="ghost1Status">Active / Ambush</span>
+                        </div>
+                    </div>
+                    <div class="ghost-item inky" id="ghost2">
+                        <span class="ghost-dot inky-dot"></span>
+                        <div class="ghost-meta">
+                            <span class="ghost-name">Inky (Bashful)</span>
+                            <span class="ghost-status" id="ghost2Status">Active / Flank</span>
+                        </div>
+                    </div>
+                    <div class="ghost-item clyde" id="ghost3">
+                        <span class="ghost-dot clyde-dot"></span>
+                        <div class="ghost-meta">
+                            <span class="ghost-name">Clyde (Pokey)</span>
+                            <span class="ghost-status" id="ghost3Status">Active / Scatter</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Touch / Virtual D-Pad -->
+            <div class="ai-card dpad-card">
+                <div class="card-head">
+                    <div class="card-title">Virtual Navigation</div>
+                    <span class="card-sub-info">TOUCH / MOUSE</span>
+                </div>
+                <div class="dpad-wrapper">
+                    <button id="btnUp" class="dpad-key" aria-label="Move Up">▲</button>
+                    <div class="dpad-horizontal">
+                        <button id="btnLeft" class="dpad-key" aria-label="Move Left">◄</button>
+                        <button id="btnDown" class="dpad-key" aria-label="Move Down">▼</button>
+                        <button id="btnRight" class="dpad-key" aria-label="Move Right">►</button>
                     </div>
                 </div>
             </div>
         </aside>
     </main>
 
-    <footer>
-        <p>Pacman Web Edition • Berkeley AI Course Project • Running on Localhost</p>
+    <!-- Information Modals for Navigation Links -->
+    <div id="modalContainer" class="modal-backdrop">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 id="modalTitle" class="modal-title">System Information</h3>
+                <button id="modalCloseBtn" class="modal-close" aria-label="Close modal">✕</button>
+            </div>
+            <div id="modalBody" class="modal-body">
+                <!-- Dynamically injected modal content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Footer -->
+    <footer class="app-footer">
+        <p>PAC-MAN AI Laboratory • Berkeley CS188 AI Project Engine • Running on Localhost</p>
     </footer>
 
-    <!-- Game Scripts -->
+    <!-- Scripts -->
     <script src="sound.js"></script>
     <script src="game.js"></script>
 </body>
