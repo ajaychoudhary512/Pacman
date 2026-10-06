@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pacman Web Arcade & AI Visualizer | Localhost Edition</title>
+    <meta name="description" content="Play classic Pacman or visualize AI search algorithms (BFS, DFS, A*) directly in your browser with synthesized audio and neon cyberpunk visuals.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23ffd700'/></svg>">
+</head>
+<body>
+    <header>
+        <div class="brand">
+            <div class="brand-icon" aria-hidden="true"></div>
+            <div class="brand-text">
+                <h1>PAC-MAN</h1>
+                <span>AI Search & Retro Arcade</span>
+            </div>
+        </div>
+        <div class="header-badges">
+            <span class="badge pulse">Localhost Active</span>
+            <button id="btnSound" class="action-btn" title="Toggle Sound">🔊 Sound</button>
+        </div>
+    </header>
+
+    <main class="game-container">
+        <!-- Play Area -->
+        <section class="play-area" aria-label="Game Screen">
+            <!-- Scoreboard HUD -->
+            <div class="scoreboard">
+                <div class="stat-box">
+                    <div class="stat-label">Score</div>
+                    <div id="scoreValue" class="stat-value score">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">High Score</div>
+                    <div id="highScoreValue" class="stat-value high-score">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Dots Left</div>
+                    <div id="dotsValue" class="stat-value dots">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Lives</div>
+                    <div id="livesContainer" class="lives-container"></div>
+                </div>
+            </div>
+
+            <!-- Canvas Wrapper -->
+            <div class="canvas-wrapper">
+                <canvas id="gameCanvas" width="560" height="580"></canvas>
+                <div id="gameOverlay" class="game-overlay">
+                    <h2 id="overlayTitle" class="overlay-title">PAC-MAN</h2>
+                    <p id="overlaySubtitle" class="overlay-subtitle">Press to Start</p>
+                    <button id="overlayBtn" class="overlay-btn">PLAY AGAIN</button>
+                </div>
+            </div>
+
+            <!-- Quick Action Bar -->
+            <div class="quick-controls">
+                <div class="btn-group">
+                    <button id="btnPause" class="action-btn">⏸ Pause (Space)</button>
+                    <button id="btnRestart" class="action-btn">🔄 Restart</button>
+                </div>
+                <div class="legend">
+                    <div class="legend-item"><span class="legend-dot blinky"></span>Blinky</div>
+                    <div class="legend-item"><span class="legend-dot pinky"></span>Pinky</div>
+                    <div class="legend-item"><span class="legend-dot inky"></span>Inky</div>
+                    <div class="legend-item"><span class="legend-dot clyde"></span>Clyde</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sidebar Settings -->
+        <aside class="sidebar" aria-label="Game Controls and Settings">
+            <!-- Mode Selection Card -->
+            <div class="control-card">
+                <div class="card-title">🎮 Mode Selection</div>
+                <div class="mode-tabs">
+                    <button id="tabManual" class="mode-tab active">Manual Play</button>
+                    <button id="tabAi" class="mode-tab">AI Autopilot</button>
+                </div>
+
+                <!-- AI Controls (Toggled) -->
+                <div id="aiSettings" class="form-group" style="display: none; flex-direction: column; gap: 12px;">
+                    <label for="aiAlgoSelect">Search Algorithm:</label>
+                    <select id="aiAlgoSelect">
+                        <option value="bfs">Breadth-First Search (BFS)</option>
+                        <option value="astar">A* Search (Manhattan)</option>
+                        <option value="dfs">Depth-First Search (DFS)</option>
+                    </select>
+
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="trailCheckbox" checked>
+                        <span>Visualize Search Path & Nodes</span>
+                    </label>
+
+                    <div class="ai-info-box">
+                        <strong>AI Search Active:</strong> Pacman computes optimal paths live using the algorithm selected above!
+                    </div>
+                </div>
+            </div>
+
+            <!-- Layout and Difficulty Card -->
+            <div class="control-card">
+                <div class="card-title">⚙️ Map & Speed</div>
+                <div class="form-group">
+                    <label for="layoutSelect">Maze Layout:</label>
+                    <select id="layoutSelect">
+                        <option value="originalClassic">Classic Arcade (originalClassic)</option>
+                        <option value="mediumClassic">Medium Classic</option>
+                        <option value="smallClassic">Small Classic</option>
+                        <option value="mediumMaze">Medium Maze (Pathfinding)</option>
+                        <option value="bigMaze">Big Maze</option>
+                        <option value="trickySearch">Tricky Search</option>
+                        <option value="tinyMaze">Tiny Maze</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="speedSlider">Game Speed:</label>
+                    <input type="range" id="speedSlider" min="0.5" max="2.5" step="0.25" value="1.0">
+                </div>
+            </div>
+
+            <!-- Virtual D-Pad -->
+            <div class="control-card">
+                <div class="card-title">🕹️ Touch / Click D-Pad</div>
+                <div class="dpad-container">
+                    <button id="btnUp" class="dpad-btn" title="Up">▲</button>
+                    <div class="dpad-row">
+                        <button id="btnLeft" class="dpad-btn" title="Left">◄</button>
+                        <button id="btnDown" class="dpad-btn" title="Down">▼</button>
+                        <button id="btnRight" class="dpad-btn" title="Right">►</button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <footer>
+        <p>Pacman Web Edition • Berkeley AI Course Project • Running on Localhost</p>
+    </footer>
+
+    <!-- Game Scripts -->
+    <script src="sound.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
