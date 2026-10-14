@@ -9,7 +9,21 @@ from http import HTTPStatus
 PORT = 8000
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 WEB_DIR = os.path.join(BASE_DIR, "web")
-LAYOUTS_DIR = os.path.join(BASE_DIR, "Pacman-Game-master", "Pacman", "layouts")
+def find_layouts_dir():
+    candidates = [
+        os.path.join(BASE_DIR, "Pacman-Game-master", "Pacman", "layouts"),
+        os.path.join(BASE_DIR, "Pacman", "layouts"),
+        os.path.join(BASE_DIR, "layouts"),
+        os.path.join(os.getcwd(), "Pacman-Game-master", "Pacman", "layouts"),
+        os.path.join(os.getcwd(), "Pacman", "layouts"),
+        os.path.join(os.getcwd(), "layouts"),
+    ]
+    for cand in candidates:
+        if os.path.isdir(cand):
+            return cand
+    return candidates[0]
+
+LAYOUTS_DIR = find_layouts_dir()
 
 class PacmanHTTPHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
@@ -23,12 +37,18 @@ class PacmanHTTPHandler(http.server.SimpleHTTPRequestHandler):
             self.send_response(HTTPStatus.OK)
             self.send_header("Content-Type", "application/json")
             self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
             self.end_headers()
             layouts = []
             if os.path.isdir(LAYOUTS_DIR):
                 for f in sorted(os.listdir(LAYOUTS_DIR)):
                     if f.endswith(".lay"):
                         layouts.append(f[:-4])
+            if not layouts:
+                layouts = [
+                    'bigMaze', 'mediumClassic', 'mediumMaze', 'originalClassic',
+                    'smallClassic', 'tinyMaze', 'trickySearch'
+                ]
             self.wfile.write(json.dumps({"layouts": layouts}).encode("utf-8"))
             return
 

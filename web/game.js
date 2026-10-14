@@ -18,6 +18,137 @@
         { id: 3, name: 'Clyde',  role: 'Pokey / Shy Scatter',    color: '#ff9933', eye: '#ffffff' }
     ];
 
+    const BUILTIN_LAYOUTS = {
+        originalClassic: [
+            "%%%%%%%%%%%%%%%%%%%%%%%%%%%%",
+            "%............%%............%",
+            "%.%%%%.%%%%%.%%.%%%%%.%%%%.%",
+            "%o%%%%.%%%%%.%%.%%%%%.%%%%o%",
+            "%.%%%%.%%%%%.%%.%%%%%.%%%%.%",
+            "%..........................%",
+            "%.%%%%.%%.%%%%%%%%.%%.%%%%.%",
+            "%.%%%%.%%.%%%%%%%%.%%.%%%%.%",
+            "%......%%....%%....%%......%",
+            "%%%%%%.%%%%% %% %%%%%.%%%%%%",
+            "%%%%%%.%%%%% %% %%%%%.%%%%%%",
+            "%%%%%%.%            %.%%%%%%",
+            "%%%%%%.% %%%%  %%%% %.%%%%%%",
+            "%     .  %G  GG  G%  .     %",
+            "%%%%%%.% %%%%%%%%%% %.%%%%%%",
+            "%%%%%%.%            %.%%%%%%",
+            "%%%%%%.% %%%%%%%%%% %.%%%%%%",
+            "%............%%............%",
+            "%.%%%%.%%%%%.%%.%%%%%.%%%%.%",
+            "%.%%%%.%%%%%.%%.%%%%%.%%%%.%",
+            "%o..%%.......  .......%%..o%",
+            "%%%.%%.%%.%%%%%%%%.%%.%%.%%%",
+            "%%%.%%.%%.%%%%%%%%.%%.%%.%%%",
+            "%......%%....%%....%%......%",
+            "%.%%%%%%%%%%.%%.%%%%%%%%%%.%",
+            "%.............P............%",
+            "%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+        ],
+        mediumClassic: [
+            "%%%%%%%%%%%%%%%%%%%%",
+            "%o...%........%....%",
+            "%.%%.%.%%%%%%.%.%%.%",
+            "%.%..............%.%",
+            "%.%.%%.%%  %%.%%.%.%",
+            "%......%G  G%......%",
+            "%.%.%%.%%%%%%.%%.%.%",
+            "%.%..............%.%",
+            "%.%%.%.%%%%%%.%.%%.%",
+            "%....%...P....%...o%",
+            "%%%%%%%%%%%%%%%%%%%%"
+        ],
+        smallClassic: [
+            "%%%%%%%%%%%%%%%%%%%%",
+            "%......%G  G%......%",
+            "%.%%...%%  %%...%%.%",
+            "%.%o.%........%.o%.%",
+            "%.%%.%.%%%%%%.%.%%.%",
+            "%........P.........%",
+            "%%%%%%%%%%%%%%%%%%%%"
+        ],
+        tinyMaze: [
+            "%%%%%%%",
+            "%    P%",
+            "% %%% %",
+            "%  %  %",
+            "%%   %%",
+            "%. %%%%",
+            "%%%%%%%"
+        ],
+        trickySearch: [
+            "%%%%%%%%%%%%%%%%%%%%",
+            "%.           ..%   %",
+            "%.%%.%%.%%.%%.%% % %",
+            "%        P       % %",
+            "%%%%%%%%%%%%%%%%%% %",
+            "%.....             %",
+            "%%%%%%%%%%%%%%%%%%%%"
+        ],
+        mediumMaze: [
+            "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%",
+            "%                                 P%",
+            "% %%%%%%%%%%%%%%%%%%%%%%% %%%%%%%% %",
+            "% %%   %   %      %%%%%%%   %%     %",
+            "% %% % % % % %%%% %%%%%%%%% %% %%%%%",
+            "% %% % % % %             %% %%     %",
+            "% %% % % % % % %%%%  %%%    %%%%%% %",
+            "% %  % % %   %    %% %%%%%%%%      %",
+            "% %% % % %%%%%%%% %%        %% %%%%%",
+            "% %% %   %%       %%%%%%%%% %%     %",
+            "%    %%%%%% %%%%%%%      %% %%%%%% %",
+            "%%%%%%      %       %%%% %% %      %",
+            "%      %%%%%% %%%%% %    %% %% %%%%%",
+            "% %%%%%%      %       %%%%% %%     %",
+            "%        %%%%%% %%%%%%%%%%% %%  %% %",
+            "%%%%%%%%%%                  %%%%%% %",
+            "%.         %%%%%%%%%%%%%%%%        %",
+            "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+        ],
+        bigMaze: [
+            "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%",
+            "%       % % %           %   %     % %",
+            "% %%%%%%% % %%% % %%% %%% %%%%%%% % %",
+            "%       %       % %     %     % %   %",
+            "%%%%% %%%%% %%% % % % %%% %%%%% % %%%",
+            "%   % % % %   % % % %   % %   % %   %",
+            "% %%% % % % %%% %%%%% %%% % %%% %%% %",
+            "%       %     %   %   %     % % %   %",
+            "%%% %%%%%%%%% %%%%%%% %%% %%% % % % %",
+            "%             %       % %   %     % %",
+            "% % %%%%% % %%% % % %%% % %%% %%% % %",
+            "% % %     % % % % %     %   % % % % %",
+            "% % % %%%%%%% % %%%%%%%%% %%% % %%% %",
+            "% % % %     %   %     %     %   %   %",
+            "%%% %%% % %%%%% %%%%% %%% %%% %%%%% %",
+            "%     % % %     % %     % %   % % % %",
+            "% % % % % %%% %%% %%% %%% % % % % % %",
+            "% % % % %                 % % %     %",
+            "%%% %%%%%%% % % %%%%% %%% % %%% %%%%%",
+            "%       % % % %     %   %     % %   %",
+            "%%%%% % % %%%%%%%%% %%%%%%%%%%% % %%%",
+            "%   % %           % %     %   % %   %",
+            "% %%% %%%%% %%%%%%%%% %%%%% % % %%% %",
+            "% %   %      %        %     %       %",
+            "% % % %%%%% %%% % % % % %%%%%%%%%%%%%",
+            "% % %   %     % % % %       %   % % %",
+            "% % %%% %%% % % % %%%%%%%%% %%% % % %",
+            "% %   % %   % % %   % %   % % %     %",
+            "% %%% %%% %%%%% %%% % % %%%%% % %%%%%",
+            "%       %   %     % %     %   % %   %",
+            "%%% % %%%%% %%%%% %%% %%% % %%% % %%%",
+            "% % % % % % % %     % %   % %   % % %",
+            "% % %%% % % % % %%%%%%%%% % % % % % %",
+            "%   %   %   %                 %     %",
+            "% % % % %%% %%% %%%%%%% %%% %%% %%% %",
+            "%.% % %       %   %       %   % %  P%",
+            "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+        ]
+    };
+
     class PacmanGame {
         constructor() {
             // Canvases
@@ -34,6 +165,7 @@
             this.overlay = document.getElementById('gameOverlay');
             this.overlayTitle = document.getElementById('overlayTitle');
             this.overlaySubtitle = document.getElementById('overlaySubtitle');
+            this.overlayBtn = document.getElementById('overlayBtn');
 
             // AI Monitor Telemetry Elements
             this.monitorStatusTag = document.getElementById('monitorStatusTag');
@@ -54,6 +186,7 @@
             // Gameplay State
             this.score = 0;
             this.highScore = parseInt(localStorage.getItem('pacman_high_score') || '0', 10);
+            this.gameStarted = false;
             this.lives = 3;
             this.dotsLeft = 0;
 
@@ -102,9 +235,18 @@
             };
 
             this.initListeners();
-            this.fetchAvailableLayouts();
-            this.loadLayout(this.currentLayout);
+
+            // Synchronously initialize the default maze IMMEDIATELY so frame 1 renders without blank screen or race conditions
+            this.parseGrid(this.getLayoutData('originalClassic'));
+            this.restart(false);
+            this.drawMazePreview();
             this.renderHighScores();
+
+            // Asynchronously fetch layout list and any custom layout from server
+            this.fetchAvailableLayouts();
+            if (this.currentLayout && this.currentLayout !== 'originalClassic') {
+                this.loadLayout(this.currentLayout);
+            }
 
             // Main rendering loop
             requestAnimationFrame(this.loop.bind(this));
@@ -112,26 +254,74 @@
 
         renderHighScores() {
             if (this.highScoreEl) this.highScoreEl.textContent = this.highScore;
+            const modalScore = document.getElementById('modalHighScoreVal');
+            if (modalScore) modalScore.textContent = this.highScore;
+        }
+
+        resetHighScore() {
+            this.highScore = 0;
+            localStorage.removeItem('pacman_high_score');
+            this.renderHighScores();
+            if (this.highScoreEl) {
+                this.highScoreEl.classList.remove('score-reset-flash');
+                void this.highScoreEl.offsetWidth; // trigger reflow
+                this.highScoreEl.classList.add('score-reset-flash');
+                setTimeout(() => {
+                    this.highScoreEl?.classList.remove('score-reset-flash');
+                }, 600);
+            }
         }
 
         initListeners() {
+            // High Score Reset Button in HUD
+            document.getElementById('btnResetHighScore')?.addEventListener('click', () => {
+                this.resetHighScore();
+            });
+
             // Keyboard Controls (Arrows and WASD)
             window.addEventListener('keydown', (e) => {
                 if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
                     e.preventDefault();
                 }
+                if (e.key === 'r' || e.key === 'R') {
+                    this.restart(false);
+                    return;
+                }
                 if (e.key === ' ' || e.code === 'Space') {
+                    if (this.isGameOver || this.isVictory) {
+                        this.restart(this.isVictory);
+                        return;
+                    }
                     this.togglePause();
                     return;
                 }
-                if (this.isPaused || this.isGameOver || this.isVictory) return;
+                if (e.key === 'Enter') {
+                    if (this.overlay && this.overlay.classList.contains('active')) {
+                        const continueRound = this.isVictory;
+                        this.overlay.classList.remove('active');
+                        this.restart(continueRound);
+                        return;
+                    }
+                }
+                if (this.isPaused) return;
 
                 if (this.mode === 'manual' && this.pacman) {
                     const k = e.key.toLowerCase();
-                    if (e.key === 'ArrowLeft'  || k === 'a') this.pacman.nextDir = DIRS.WEST;
-                    if (e.key === 'ArrowRight' || k === 'd') this.pacman.nextDir = DIRS.EAST;
-                    if (e.key === 'ArrowUp'    || k === 'w') this.pacman.nextDir = DIRS.NORTH;
-                    if (e.key === 'ArrowDown'  || k === 's') this.pacman.nextDir = DIRS.SOUTH;
+                    let chosenDir = null;
+                    if (e.key === 'ArrowLeft'  || k === 'a') chosenDir = DIRS.WEST;
+                    if (e.key === 'ArrowRight' || k === 'd') chosenDir = DIRS.EAST;
+                    if (e.key === 'ArrowUp'    || k === 'w') chosenDir = DIRS.NORTH;
+                    if (e.key === 'ArrowDown'  || k === 's') chosenDir = DIRS.SOUTH;
+
+                    if (chosenDir) {
+                        this.pacman.nextDir = chosenDir;
+                        if (!this.gameStarted) {
+                            this.gameStarted = true;
+                            if (this.pacman.dir === DIRS.STOP) {
+                                this.pacman.dir = chosenDir;
+                            }
+                        }
+                    }
                 }
             });
 
@@ -141,7 +331,15 @@
                 if (!el) return;
                 const trigger = (e) => {
                     e.preventDefault();
-                    if (this.mode === 'manual' && this.pacman) this.pacman.nextDir = dir;
+                    if (this.mode === 'manual' && this.pacman) {
+                        this.pacman.nextDir = dir;
+                        if (!this.gameStarted) {
+                            this.gameStarted = true;
+                            if (this.pacman.dir === DIRS.STOP) {
+                                this.pacman.dir = dir;
+                            }
+                        }
+                    }
                 };
                 el.addEventListener('mousedown', trigger);
                 el.addEventListener('touchstart', trigger, { passive: false });
@@ -154,15 +352,29 @@
 
             // Controls Toolbar Buttons
             document.getElementById('btnPlay')?.addEventListener('click', () => {
-                if (this.isPaused) this.togglePause();
-                if (this.isGameOver || this.isVictory) this.restart();
+                if (this.isGameOver || this.isVictory) {
+                    this.restart(this.isVictory);
+                    return;
+                }
+                if (this.isPaused) {
+                    this.togglePause();
+                }
+                this.gameStarted = true;
+                if (this.pacman && this.pacman.dir === DIRS.STOP) {
+                    this.pacman.dir = this.pacman.nextDir || DIRS.WEST;
+                }
+                if (this.mode === 'ai') {
+                    this.recalculateAiPath();
+                }
             });
 
             document.getElementById('btnPause')?.addEventListener('click', () => this.togglePause());
-            document.getElementById('btnRestart')?.addEventListener('click', () => this.restart());
+            document.getElementById('btnRestart')?.addEventListener('click', () => this.restart(false));
             document.getElementById('overlayBtn')?.addEventListener('click', () => {
+                const continueRound = this.isVictory;
                 this.overlay.classList.remove('active');
-                this.restart();
+                this.restart(continueRound);
+                this.gameStarted = true;
             });
 
             // Sound Toggle
@@ -282,52 +494,40 @@
             }
         }
 
-        async loadLayout(layoutName) {
-            try {
-                const res = await fetch(`/api/layout?name=${encodeURIComponent(layoutName)}`);
-                const data = await res.json();
-                this.parseGrid(data.grid);
-            } catch (err) {
-                console.warn('Falling back to default layout:', err);
-                this.parseGrid(this.getDefaultLayout());
+        getLayoutData(layoutName) {
+            if (BUILTIN_LAYOUTS[layoutName]) {
+                return BUILTIN_LAYOUTS[layoutName];
             }
-            this.restart();
+            return BUILTIN_LAYOUTS['originalClassic'];
+        }
+
+        async loadLayout(layoutName) {
+            this.currentLayout = layoutName || 'originalClassic';
+            try {
+                const res = await fetch(`/api/layout?name=${encodeURIComponent(this.currentLayout)}`);
+                if (!res.ok) throw new Error(`HTTP status ${res.status}`);
+                const data = await res.json();
+                if (data && Array.isArray(data.grid) && data.grid.length > 0) {
+                    this.parseGrid(data.grid);
+                } else {
+                    throw new Error('Invalid layout payload');
+                }
+            } catch (err) {
+                console.warn(`[Pacman] Using fallback for layout "${layoutName}":`, err.message || err);
+                this.parseGrid(this.getLayoutData(this.currentLayout));
+            }
+            this.restart(false);
             this.drawMazePreview();
         }
 
         getDefaultLayout() {
-            return [
-                "%%%%%%%%%%%%%%%%%%%%%%%%%%%%",
-                "%............%%............%",
-                "%.%%%%.%%%%%.%%.%%%%%.%%%%.%",
-                "%o%%%%.%%%%%.%%.%%%%%.%%%%o%",
-                "%.%%%%.%%%%%.%%.%%%%%.%%%%.%",
-                "%..........................%",
-                "%.%%%%.%%.%%%%%%%%.%%.%%%%.%",
-                "%.%%%%.%%.%%%%%%%%.%%.%%%%.%",
-                "%......%%....%%....%%......%",
-                "%%%%%%.%%%%% %% %%%%%.%%%%%%",
-                "%%%%%%.%%%%% %% %%%%%.%%%%%%",
-                "%%%%%%.%            %.%%%%%%",
-                "%%%%%%.% %%%%  %%%% %.%%%%%%",
-                "%     .  %G  GG  G%  .     %",
-                "%%%%%%.% %%%%%%%%%% %.%%%%%%",
-                "%%%%%%.%            %.%%%%%%",
-                "%%%%%%.% %%%%%%%%%% %.%%%%%%",
-                "%............%%............%",
-                "%.%%%%.%%%%%.%%.%%%%%.%%%%.%",
-                "%.%%%%.%%%%%.%%.%%%%%.%%%%.%",
-                "%o..%%.......  .......%%..o%",
-                "%%%.%%.%%.%%%%%%%%.%%.%%.%%%",
-                "%%%.%%.%%.%%%%%%%%.%%.%%.%%%",
-                "%......%%....%%....%%......%",
-                "%.%%%%%%%%%%.%%.%%%%%%%%%%.%",
-                "%.............P............%",
-                "%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-            ];
+            return this.getLayoutData('originalClassic');
         }
 
         parseGrid(lines) {
+            if (!Array.isArray(lines) || lines.length === 0) {
+                lines = this.getLayoutData('originalClassic');
+            }
             this.grid = lines.map(line => line.split(''));
             this.height = this.grid.length;
             this.width = Math.max(...this.grid.map(row => row.length));
@@ -378,11 +578,11 @@
             }
         }
 
-        restart() {
+        restart(keepScore = false) {
             this.isGameOver = false;
             this.isVictory = false;
             this.isPaused = false;
-            this.score = 0;
+            this.score = keepScore ? this.score : 0;
             this.lives = 3;
             this.scaredTimer = 0;
             this.ghostStreak = 0;
@@ -391,6 +591,7 @@
             this.visitedNodes = [];
             this.currentTargetNode = null;
             this.sessionStats.gamesStarted++;
+            this.gameStarted = (this.mode === 'ai');
 
             this.food.clear();
             this.capsules.clear();
@@ -411,7 +612,15 @@
 
             // Fallback for maze layouts without food
             if (this.food.size === 0 && this.capsules.size === 0) {
-                this.food.add(`${pacStart.x + 1},${pacStart.y}`);
+                for (let y = 0; y < this.height; y++) {
+                    for (let x = 0; x < this.width; x++) {
+                        if (this.grid[y][x] === ' ' && !(x === pacStart.x && y === pacStart.y)) {
+                            this.food.add(`${x},${y}`);
+                            break;
+                        }
+                    }
+                    if (this.food.size > 0) break;
+                }
             }
 
             this.dotsLeft = this.food.size + this.capsules.size;
@@ -419,6 +628,8 @@
             this.pacman = {
                 x: pacStart.x,
                 y: pacStart.y,
+                startX: pacStart.x,
+                startY: pacStart.y,
                 dir: DIRS.STOP,
                 nextDir: DIRS.WEST,
                 speed: 0.12,
@@ -455,7 +666,7 @@
             } else {
                 this.metricState.textContent = 'MANUAL CONTROL';
                 this.metricState.className = 'metric-val text-white';
-                this.monitorStatusTag.textContent = 'USER DIRECT STEERING';
+                this.monitorStatusTag.textContent = 'READY - USE ARROWS OR PLAY';
             }
         }
 
@@ -490,14 +701,17 @@
         }
 
         isWall(x, y) {
-            if (x < 0 || x >= this.width || y < 0 || y >= this.height) return true;
-            return this.grid[y][x] === '%';
+            if (y < 0 || y >= this.height) return true;
+            if (!this.width) return true;
+            const wx = (x % this.width + this.width) % this.width;
+            return this.grid[y] && this.grid[y][wx] === '%';
         }
 
         getLegalNeighbors(x, y) {
             const res = [];
+            if (!this.width) return res;
             [DIRS.NORTH, DIRS.SOUTH, DIRS.WEST, DIRS.EAST].forEach(d => {
-                const nx = x + d.x;
+                const nx = (x + d.x + this.width) % this.width;
                 const ny = y + d.y;
                 if (!this.isWall(nx, ny)) {
                     res.push({ x: nx, y: ny, dir: d });
@@ -510,7 +724,7 @@
            AI PATHFINDING ALGORITHMS: BFS, DFS, A*, GREEDY BEST-FIRST
            ================================================================== */
         recalculateAiPath() {
-            if (!this.pacman || this.dotsLeft === 0) return;
+            if (!this.pacman || !this.grid || this.grid.length === 0 || this.dotsLeft === 0) return;
             const startKey = `${Math.round(this.pacman.x)},${Math.round(this.pacman.y)}`;
             const goals = new Set([...this.food, ...this.capsules]);
             if (goals.size === 0) return;
@@ -718,14 +932,21 @@
         // Main Loop
         loop() {
             this.pulseAnim = (this.pulseAnim + 0.05) % (Math.PI * 2);
-            if (!this.isPaused && !this.isGameOver && !this.isVictory) {
-                this.update();
+            try {
+                if (!this.isPaused && !this.isGameOver && !this.isVictory && this.pacman && this.grid && this.grid.length > 0) {
+                    this.update();
+                }
+                if (this.grid && this.grid.length > 0) {
+                    this.render();
+                }
+            } catch (err) {
+                console.error('Error in Pacman loop:', err);
             }
-            this.render();
             requestAnimationFrame(this.loop.bind(this));
         }
 
         update() {
+            if (!this.pacman || !this.grid || this.grid.length === 0) return;
             const step = this.speedFactor;
 
             // Scared Timer countdown
@@ -745,7 +966,9 @@
             }
 
             this.updatePacman(step);
-            this.updateGhosts(step);
+            if (this.gameStarted) {
+                this.updateGhosts(step);
+            }
             this.updateGhostStatuses();
             this.checkCollisions();
         }
@@ -754,7 +977,10 @@
             this.ghosts.forEach((g, idx) => {
                 const statusEl = document.getElementById(`ghost${idx}Status`);
                 if (!statusEl) return;
-                if (g.isDead) {
+                if (!this.gameStarted) {
+                    statusEl.textContent = 'Standby / Ready';
+                    statusEl.style.color = '#ffd700';
+                } else if (g.isDead) {
                     statusEl.textContent = 'Respawning / Return';
                     statusEl.style.color = '#8c9cb3';
                 } else if (this.scaredTimer > 0) {
@@ -784,8 +1010,11 @@
                 }
                 if (this.aiPath.length > 0 && p.progress === 0) {
                     const nextTile = this.aiPath[0];
-                    const dx = nextTile[0] - p.x;
-                    const dy = nextTile[1] - p.y;
+                    let dx = nextTile[0] - p.x;
+                    let dy = nextTile[1] - p.y;
+                    if (dx > 1) dx = -1;
+                    else if (dx < -1) dx = 1;
+
                     if (dx > 0) p.nextDir = DIRS.EAST;
                     else if (dx < 0) p.nextDir = DIRS.WEST;
                     else if (dy > 0) p.nextDir = DIRS.SOUTH;
@@ -796,6 +1025,14 @@
                         this.metricState.className = 'metric-val text-green';
                     }
                 }
+            }
+
+            // Instant 180° direction reversal mid-corridor
+            if (p.dir !== DIRS.STOP && p.nextDir && (p.dir.x === -p.nextDir.x && p.dir.y === -p.nextDir.y)) {
+                p.x = (p.x + p.dir.x + this.width) % this.width;
+                p.y = p.y + p.dir.y;
+                p.progress = Math.max(0, 1 - p.progress);
+                p.dir = p.nextDir;
             }
 
             // At tile boundary (progress == 0), decide direction
@@ -812,8 +1049,8 @@
             if (p.dir !== DIRS.STOP) {
                 p.progress += p.speed * step;
                 if (p.progress >= 1) {
-                    p.x += p.dir.x;
-                    p.y += p.dir.y;
+                    p.x = (p.x + p.dir.x + this.width) % this.width;
+                    p.y = p.y + p.dir.y;
                     p.progress = 0;
 
                     // Eat food dot
@@ -859,6 +1096,7 @@
         }
 
         updateGhosts(step) {
+            if (!this.pacman || !this.ghosts) return;
             this.ghosts.forEach(g => {
                 if (g.isDead) {
                     // Respawning towards center
@@ -903,14 +1141,15 @@
                 const ghostSpeed = (this.scaredTimer > 0 ? g.speed * 0.65 : g.speed) * step;
                 g.progress += ghostSpeed;
                 if (g.progress >= 1) {
-                    g.x += g.dir.x;
-                    g.y += g.dir.y;
+                    g.x = (g.x + g.dir.x + this.width) % this.width;
+                    g.y = g.y + g.dir.y;
                     g.progress = 0;
                 }
             });
         }
 
         checkCollisions() {
+            if (!this.pacman || !this.ghosts) return;
             const px = this.pacman.x + this.pacman.dir.x * this.pacman.progress;
             const py = this.pacman.y + this.pacman.dir.y * this.pacman.progress;
 
@@ -948,16 +1187,31 @@
                 this.isGameOver = true;
                 this.overlayTitle.textContent = 'MISSION FAILED';
                 this.overlaySubtitle.textContent = `All lives lost. Final Score: ${this.score}`;
+                if (this.overlayBtn) this.overlayBtn.textContent = '↻ RETRY MISSION';
                 this.overlay.classList.add('active');
             } else {
+                this.pacman.x = this.pacman.startX;
+                this.pacman.y = this.pacman.startY;
                 this.pacman.progress = 0;
                 this.pacman.dir = DIRS.STOP;
+                this.pacman.nextDir = DIRS.WEST;
                 this.ghosts.forEach(g => {
                     g.x = g.startX;
                     g.y = g.startY;
                     g.progress = 0;
                     g.dir = DIRS.NORTH;
+                    g.isDead = false;
                 });
+                this.scaredTimer = 0;
+                this.ghostStreak = 0;
+                this.gameStarted = false;
+                if (this.monitorStatusTag) {
+                    this.monitorStatusTag.textContent = `PAC-MAN RESPAWNED (LIVES: ${this.lives})`;
+                }
+                if (this.mode === 'ai') {
+                    this.gameStarted = true;
+                    this.recalculateAiPath();
+                }
             }
         }
 
@@ -967,7 +1221,8 @@
             this.updateHUD();
             window.soundManager.playVictory();
             this.overlayTitle.textContent = 'MISSION ACCOMPLISHED';
-            this.overlaySubtitle.textContent = `Maze cleared! Final Score: ${this.score}`;
+            this.overlaySubtitle.textContent = `All dots cleared! Final Score: ${this.score}`;
+            if (this.overlayBtn) this.overlayBtn.textContent = '↻ PLAY AGAIN / NEXT ROUND';
             this.overlay.classList.add('active');
         }
 
@@ -1324,7 +1579,13 @@
                         <tbody>
                             <tr><td><strong>Games Launched:</strong></td><td>${this.sessionStats.gamesStarted}</td></tr>
                             <tr><td><strong>Current Score:</strong></td><td>${this.score}</td></tr>
-                            <tr><td><strong>High Score:</strong></td><td>${this.highScore}</td></tr>
+                            <tr>
+                                <td><strong>High Score:</strong></td>
+                                <td>
+                                    <span id="modalHighScoreVal">${this.highScore}</span>
+                                    <button id="btnResetHighScoreModal" class="modal-reset-btn">↺ Reset High Score</button>
+                                </td>
+                            </tr>
                             <tr><td><strong>Total Pellets Cleared:</strong></td><td>${this.sessionStats.dotsEaten}</td></tr>
                             <tr><td><strong>Ghosts Consumed:</strong></td><td>${this.sessionStats.ghostsEaten}</td></tr>
                             <tr><td><strong>Cumulative Nodes Explored:</strong></td><td>${this.sessionStats.nodesExploredTotal}</td></tr>
@@ -1333,6 +1594,9 @@
                         </tbody>
                     </table>
                 `);
+                document.getElementById('btnResetHighScoreModal')?.addEventListener('click', () => {
+                    this.resetHighScore();
+                });
             });
 
             document.getElementById('navAbout')?.addEventListener('click', () => {
@@ -1355,7 +1619,15 @@
                             <tr><td><strong>Sound Toggle:</strong></td><td>Sound Button in Header</td></tr>
                         </tbody>
                     </table>
+                    <h4 style="margin-top: 14px;">Game Data</h4>
+                    <p style="margin: 8px 0 10px 0; font-size: 0.85rem; color: #8c9cb3;">Reset the saved High Score and clear local storage records:</p>
+                    <button id="btnResetHighScoreSettings" class="modal-reset-btn" style="padding: 6px 14px; margin-left: 0;">↺ Reset High Score to 0</button>
                 `);
+                document.getElementById('btnResetHighScoreSettings')?.addEventListener('click', () => {
+                    this.resetHighScore();
+                    const btn = document.getElementById('btnResetHighScoreSettings');
+                    if (btn) btn.textContent = '✓ High Score Reset to 0!';
+                });
             });
         }
 

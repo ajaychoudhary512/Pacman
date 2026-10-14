@@ -1,0 +1,12 @@
+{
+  "name": "pacman-game",
+  "version": "1.0.0",
+  "description": "Pac-Man AI Search & Retro Arcade Laboratory",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
